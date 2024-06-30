@@ -1,0 +1,41 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    labels:
+      - "traefik.http.routers.client.rule=Host(`client.localhost`)"
+    networks:
+      - web
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    labels:
+      - "traefik.http.routers.server.rule=Host(`server.localhost`)"
+    networks:
+      - web
+
+  traefik:
+    image: traefik:v2.5
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --entrypoints.web.address=:80
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - web
+
+networks:
+  web:
+    driver: bridge
