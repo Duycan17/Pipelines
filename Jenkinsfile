@@ -15,8 +15,8 @@ pipeline {
         stage('Build React App') {
             steps {
                 script {
-                    dir('client') {
-                        sh 'docker build -t react-app .'
+                    dir('vite-project') {
+                        sh 'docker build -t react-app -f Dockerfile .'
                     }
                 }
             }
@@ -25,9 +25,9 @@ pipeline {
         stage('Build Spring Boot App') {
             steps {
                 script {
-                    dir('server') {
+                    dir('demo1') {
                         sh './gradlew bootJar'
-                        sh 'docker build -t spring-app .'
+                        sh 'docker build -t spring-app -f Dockerfile .'
                     }
                 }
             }
